@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "E-mail Definition";
+}
+
+<link type="text/css" href="~/StartPage.css" rel="stylesheet" />
+
+<header class="start-page">
+    <div class="content-wrapper">
+        <div>
+            <h1>@ViewBag.Title</h1>
+            <img src="http://avizier.upt.ro/wp-content/uploads/2013/10/logo3.jpg" alt="UPT Logo">
+        </div>
+    </div>
+</header>
+
+<body class="start-page">
+    <div id="body" class="start-page">
+
+@using (Html.BeginForm("createEmail", "Home", FormMethod.Post))
+{
+        <section class="featured">
+            <div class="content-wrapper">
+                <h2> Create new e-mail </h2>
+                <p>
+                    Provide e-mail information here.
+                </p>
+            </div>
+        </section>
+        <section class="content-wrapper main-content clear-fix">
+            <div class="panel-body">
+                <label class="col-sm-3 control-label">Head</label>
+                <div class="col-sm-8">
+                    <textarea name="headSection" id="headSection">Hi Scott,</textarea>
+                </div>
+            </div>
+            <br />
+            <div class="panel-body">
+                <label class="col-sm-3 control-label">Content</label>
+                <div class="col-sm-8">
+                    <textarea name="contentSection" id="contentSection">Thanks for the e-mail. It is always nice to hear from people, especially from you, Scott. I have not got any reply, a positive or negative one, from Seibido yet. Let's wait and hope that it will make a BOOK. Have you finished your paperwork for Karen and writing academic articles? If you have some free time in the near future, I want to meet you! Also I want to explain to you our next project. Why not drink out in Hiroshima if we are accepted? We need to celebrate ourselves, don't we? Let's have a small end-of-the-year party!</textarea>
+                </div>
+            </div>
+            <br />
+            <div class="panel-body">
+                <label class="col-sm-3 control-label">Footer</label>
+                <div class="col-sm-8">
+                    <textarea name="footerSection" id="footerSection">See you soon, Katarina</textarea>
+                </div>
+            </div>
+            <br />
+            <button class="start-page-button" name="createEmail">Create e-mail</button>
+        </section>
+        <section class="featured">
+            <div class="content-wrapper">
+            </div>
+        </section>
+}
+    </div>
+</body>
+
+
+
