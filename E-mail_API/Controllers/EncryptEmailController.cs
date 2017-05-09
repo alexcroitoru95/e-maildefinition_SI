@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Web;
+using E_mail_API.Models;
 
 namespace E_mail_API.Controllers
 {
@@ -19,29 +20,40 @@ namespace E_mail_API.Controllers
         RSACryptoServiceProvider myRSA = new RSACryptoServiceProvider(2048);
         RSACryptoServiceProvider rsa_CryptoService = new RSACryptoServiceProvider();
 
-        public String head, content, footer;
-
-        public ActionResult Index(string headSection, string contentSection, string footerSection)
+        [HttpGet]
+        public ActionResult Index()
         {
+            String head, content, footer;
+
             ViewBag.Title = "Encrypt E-mail Definition";
 
-            head = headSection;
-            content = contentSection;
-            footer = footerSection;
+            E_mailContent model = (E_mailContent)TempData["model"];
 
-            if(headSection != null && contentSection != null && footerSection != null)
+            head = model.headSection;
+            content = model.contentSection;
+            footer = model.footerSection;
+
+            if(head != null && content != null && footer != null)
             {
-                ViewBag.head = headSection;
-                ViewBag.content = contentSection;
-                ViewBag.footer = footerSection;
+                ViewBag.head = head;
+                ViewBag.content = content;
+                ViewBag.footer = footer;
             }
 
-            return View("EncryptEmail");
+            Session["head"] = head;
+            Session["content"] = content;
+            Session["footer"] = footer;
+
+            return View("EncryptEmail", model);
         }
 
         [HttpPost]
         public ActionResult createEncryptedEmail()
         {
+            var head_encrypt = (Session["head"] != null) ? Session["head"] : ""; 
+            var content_encrypt = (Session["content"] != null) ? Session["content"] : ""; 
+            var footer_encrypt = (Session["footer"] != null) ? Session["footer"] : ""; ;
+
             var private_Key = myRSA.ExportParameters(true);
             var public_Key = myRSA.ExportParameters(false);
 
@@ -84,25 +96,28 @@ namespace E_mail_API.Controllers
             //Importare cheie publica
             rsa_CryptoService.ImportParameters(public_Key);
 
-            var head_encrypt = head;
-            var content_encrypt = content;
-            var footer_encrypt = footer;
-
             //Criptarea e-mail definition
-            var bytesEmailHead = Encoding.Unicode.GetBytes(head_encrypt);
-            var bytesEmailContent = Encoding.Unicode.GetBytes(content_encrypt);
-            var bytesEmailFooter = Encoding.Unicode.GetBytes(footer_encrypt);
+            var bytesEmailHead = Encoding.Unicode.GetBytes(head_encrypt.ToString());
+            var bytesEmailContent = Encoding.Unicode.GetBytes(content_encrypt.ToString());
+            var bytesEmailFooter = Encoding.Unicode.GetBytes(footer_encrypt.ToString());
 
             var cypherHead = Convert.ToBase64String(bytesEmailHead);
             var cypherContent = Convert.ToBase64String(bytesEmailContent);
             var cypherFooter = Convert.ToBase64String(bytesEmailFooter);
 
-            
             int y_position_content = 600;
             int y_position_footer = 250;
+            
+            int chunkSize = 25;
+            int stringLength = cypherContent.Length;
+            string[] contentSplit = new string[stringLength];
 
-            string[] contentSplit = Regex.Split(content, @"(?<=[.?!])", RegexOptions.None);
-            string[] footerSplit = Regex.Split(footer, @"(?<=[,])", RegexOptions.None);
+            for (int i = 0; i < stringLength; i += chunkSize)
+            {
+                if (i + chunkSize > stringLength) chunkSize = stringLength - i;
+                    contentSplit[i] = cypherContent.Substring(i, chunkSize);
+
+            }
 
             //Scriere in PDF
             Document pdfDoc = new Document(PageSize.A4, 10, 10, 10, 10);
@@ -120,20 +135,14 @@ namespace E_mail_API.Controllers
                 cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "E-mail Definition", 250, 770, 0);
                 cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, cypherHead, 75, 665, 0);
 
-                foreach (string line in contentSplit)
+                for( int i = 0;i < stringLength; i += 1)
                 {
-                    string contentLine = line.TrimStart(' ');
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, cypherContent, 75, y_position_content, 0);
+                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, contentSplit[i], 75, y_position_content, 0);
                     y_position_content = y_position_content - 20;
-
                 }
-
-                foreach (string line in footerSplit)
-                {
-                    string footerLine = line.TrimStart(' ');
-                    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, cypherFooter, 380, y_position_footer, 0);
-                    y_position_footer = y_position_footer - 20;
-                }
+                                
+                cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, cypherFooter, 380, y_position_footer, 0);
+                y_position_footer = y_position_footer - 20;
 
                 cb.EndText();
                 cb.RestoreState();

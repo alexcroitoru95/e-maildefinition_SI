@@ -39,6 +39,8 @@ namespace E_mail_API.Controllers
             model.contentSection = contentSection;
             model.footerSection = footerSection;
 
+            TempData["model"] = model;
+
             int y_position_content = 600;
             int y_position_footer = 250;
 
@@ -58,7 +60,7 @@ namespace E_mail_API.Controllers
             //    cb.SetFontAndSize(BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED), 12f);
             //    cb.BeginText();
 
-            //    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "E-mail Definition", 250 ,770, 0);
+            //    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "E-mail Definition", 250, 770, 0);
             //    cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, head, 75, 665, 0);
 
             //    foreach (string line in contentSplit)
@@ -66,7 +68,7 @@ namespace E_mail_API.Controllers
             //        string contentLine = line.TrimStart(' ');
             //        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, contentLine, 75, y_position_content, 0);
             //        y_position_content = y_position_content - 20;
-                    
+
             //    }
 
             //    foreach (string line in footerSplit)
@@ -80,7 +82,7 @@ namespace E_mail_API.Controllers
             //    cb.RestoreState();
 
             //    pdfDoc.Close();
-            // }
+            //}
 
             //Response.ContentType = "application/pdf";
             //Response.AddHeader("content-disposition", "attachment;" + "filename=E-mail Definition.pdf");
