@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Encrypt E-mail Definition";
+}
+
+@model E_mail_API.Models.E_mailContent
+
+<link type="text/css" href="~/EncryptPage.css" rel="stylesheet" />
+
+<header class="encrypt-page">
+    <div class="content-wrapper">
+        <div>
+            <h1>@ViewBag.Title</h1>
+            <img src="http://avizier.upt.ro/wp-content/uploads/2013/10/logo3.jpg" alt="UPT Logo">
+        </div>
+    </div>
+</header>
+
+<body class="encrypt-page">
+    <div id="body" class="encrypt-page">
+
+        @using (Html.BeginForm("createEncryptedEmail", "EncryptEmail", FormMethod.Post))
+        {
+            <section class="featured">
+                <div class="content-wrapper">
+                    <h2> Encrypt your e-mail definition </h2>
+                    <p>
+                        This is the e-mail definition that you`ve entererd.
+                    </p>
+                </div>
+            </section>
+            <section class="content-wrapper main-content clear-fix">
+                <div class="panel-body">
+                    <label class="col-sm-3 control-label">Head</label>
+                    <div class="col-sm-8">
+                        <textarea readonly name="headSection" id="headSection">@ViewBag.head</textarea>
+                    </div>
+                </div>
+                <br />
+                <div class="panel-body">
+                    <label class="col-sm-3 control-label">Content</label>
+                    <div class="col-sm-8">
+                        <textarea readonly name="contentSection" id="contentSection">@ViewBag.content</textarea>
+                    </div>
+                </div>
+                <br />
+                <div class="panel-body">
+                    <label class="col-sm-3 control-label">Footer</label>
+                    <div class="col-sm-8">
+                        <textarea readonly name="footerSection" id="footerSection">@ViewBag.footer</textarea>
+                    </div>
+                </div>
+                <br />
+                <button class="encrypt-page-button" name="createEncryptedEmail">Create encrypted e-mail</button>
+            </section>
+            <section class="featured">
+                <div class="content-wrapper">
+                </div>
+            </section>
+        }
+    </div>
+</body>
