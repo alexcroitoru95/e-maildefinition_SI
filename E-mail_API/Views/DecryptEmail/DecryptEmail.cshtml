@@ -1,6 +1,4 @@
-﻿@model E_mail_API.Models.E_mailContent
-
-<link type="text/css" href="~/EncryptPage.css" rel="stylesheet" />
+﻿<link type="text/css" href="~/EncryptPage.css" rel="stylesheet" />
 
 <header class="encrypt-page">
     <div class="content-wrapper">
@@ -14,14 +12,15 @@
 <body class="encrypt-page">
     <div id="body" class="encrypt-page">
 
-            <section class="featured">
-                <div class="content-wrapper">
-                    <h2> Using RSA with 2048 bits long. </h2>
-                </div>
-            </section>
+        <section class="featured">
+            <div class="content-wrapper">
+                <h2> Enter Encoded Message and RSA key for decryption. </h2>
+            </div>
+        </section>
 
-@using (Html.BeginForm())
-{
+        @using (Html.BeginForm())
+        {
+
             <section class="content-wrapper main-content clear-fix">
                 <div class="panel-body">
                     <label class="col-sm-3 control-label">Head</label>
@@ -44,13 +43,14 @@
                     </div>
                 </div>
                 <br />
-                <button class="encrypt-page-button" name="action" value="exportEncodedMessage">Export encoded e-mail definition</button>
-                <button class="encrypt-page-button" name="action" value="exportKey">Export RSA key</button>
+                <button class="encrypt-page-button" name="action" value="importMessage">Import Encoded Message</button>
+                <button class="encrypt-page-button" name="action" value="importKey">Import RSA key</button>
             </section>
-}
-            <section class="featured">
-                <div class="content-wrapper">
-                </div>
-            </section>
+
+        }
+        <section class="featured">
+            <div class="content-wrapper">
+            </div>
+        </section>
     </div>
 </body>

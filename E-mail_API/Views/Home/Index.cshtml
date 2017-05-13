@@ -16,8 +16,11 @@
 <body class="start-page">
     <div id="body" class="start-page">
 
-@using (Html.BeginForm("createEmail", "Home", FormMethod.Post))
+@if (TempData["sErrMsg"] != null)
 {
+    Html.RenderPartial("ErrorMessageView", TempData["sErrMsg"]);
+}
+
         <section class="featured">
             <div class="content-wrapper">
                 <h2> Create new e-mail </h2>
@@ -26,6 +29,9 @@
                 </p>
             </div>
         </section>
+
+@using (Html.BeginForm())
+{
         <section class="content-wrapper main-content clear-fix">
             <div class="panel-body">
                 <label class="col-sm-3 control-label">Head</label>
@@ -48,13 +54,15 @@
                 </div>
             </div>
             <br />
-        <button class="start-page-button" name="createEmail">Create e-mail</button>
+        <button class="start-page-button" name="action" value="createEmail">Create encrypted e-mail</button>
+        <button class="start-page-button" name="action" value="createPDF">Create PDF E-mail</button>
         </section>
+}
+
         <section class="featured">
             <div class="content-wrapper">
             </div>
         </section>
-}
     </div>
 </body>
 
