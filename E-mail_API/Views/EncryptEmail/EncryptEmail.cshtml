@@ -20,38 +20,30 @@
 
             <section class="featured">
                 <div class="content-wrapper">
-                    <h2> Using RSA with 2048 bits long. </h2>
+                    <h2> Insert message in order to encrypt. </h2>
                 </div>
             </section>
-
-@using (Html.BeginForm())
-{
             <section class="content-wrapper main-content clear-fix">
-                <div class="panel-body">
-                    <label class="col-sm-3 control-label">Head</label>
-                    <div class="col-sm-8">
-                        <textarea readonly name="headSection" id="headSection">@ViewBag.head</textarea>
-                    </div>
-                </div>
                 <br />
-                <div class="panel-body">
-                    <label class="col-sm-3 control-label">Content</label>
-                    <div class="col-sm-8">
-                        <textarea readonly name="contentSection" id="contentSection">@ViewBag.content</textarea>
-                    </div>
-                </div>
                 <br />
-                <div class="panel-body">
-                    <label class="col-sm-3 control-label">Footer</label>
-                    <div class="col-sm-8">
-                        <textarea readonly name="footerSection" id="footerSection">@ViewBag.footer</textarea>
-                    </div>
-                </div>
+                <label class="col-sm-3 control-label" for="file">Upload message to encrypt:</label>
+                @using (Html.BeginForm("ImportMessage", "EncryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input class="col-sm-3" type="file" name="file" id="file" />
+                    <span class="input-group-btn">
+                        <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
+                    </span>
+                }
                 <br />
-                <button class="encrypt-page-button" name="action" value="exportEncodedMessage">Export encoded e-mail definition</button>
-                <button class="encrypt-page-button" name="action" value="exportKey">Export RSA key</button>
+                <br />
+                <br />
+                <br />
+                @using (Html.BeginForm())
+                { 
+                    <button class="encrypt-page-button" name="action" value="exportEncodedMessage">Export encoded e-mail definition</button>
+                    <button class="encrypt-page-button" name="action" value="exportRSAPublicKey">Export RSA Public Key</button>
+                }
             </section>
-}
             <section class="featured">
                 <div class="content-wrapper">
                 </div>

@@ -28,23 +28,38 @@ namespace E_mail_API.Controllers
         }
 
         [HttpPost]
-        [MultipleButton(MatchFormKey = "action", MatchFormValue = "createEmail")]
-        public ActionResult createEmail(string headSection, string contentSection, string footerSection)
+        [MultipleButton(MatchFormKey = "action", MatchFormValue = "goTo")]
+        public ActionResult goTo()
         {
             TempData["clicked"] = "clicked";
 
+            return RedirectToAction("Index", "EncryptEmail");
+        }
+
+        [HttpPost]
+        [MultipleButton(MatchFormKey = "action", MatchFormValue = "createTXT")]
+        public ActionResult createTXT(string headSection, string contentSection, string footerSection)
+        {
             head = headSection;
             content = contentSection;
             footer = footerSection;
 
-            E_mailContent model = new E_mailContent();
-            model.headSection = headSection;
-            model.contentSection = contentSection;
-            model.footerSection = footerSection;
+            StringWriter oStringWriter = new StringWriter();
 
-            TempData["model"] = model;
+            Response.ContentType = "application/txt";
+            Response.AddHeader("content-disposition", "attachment;filename=Message.txt");
+            Response.Clear();
 
-            return RedirectToAction("Index", "EncryptEmail");
+            using (TextWriter writer = new StreamWriter(Response.OutputStream, Encoding.UTF8))
+            {
+                writer.WriteLine("Header: " + head);
+                writer.WriteLine("Content: " + content);
+                writer.WriteLine("Footer: " + footer);
+            }
+
+            Response.End();
+
+            return View("Index");
         }
 
         [HttpPost]

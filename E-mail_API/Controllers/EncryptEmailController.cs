@@ -21,8 +21,10 @@ namespace E_mail_API.Controllers
 {
     public class EncryptEmailController : Controller
     {
-        RSACryptoServiceProvider myRSA = new RSACryptoServiceProvider(2048);
-        RSACryptoServiceProvider rsa_CryptoService = new RSACryptoServiceProvider();
+        RSACryptoServiceProvider myRSA = new RSACryptoServiceProvider();
+        CspParameters csp = new CspParameters();
+
+        const string EncrFolder = @"F:\University\SI_2\Proiect SI\e-maildefinition_SI\E-mail_API\App_Data\Encrypt\";
 
         [HttpGet]
         public ActionResult Index()
@@ -34,110 +36,47 @@ namespace E_mail_API.Controllers
                 return View("~/Views/Home/Index.cshtml");
             }
 
-            String head, content, footer;
+            String keyName;
 
             ViewBag.Title = "Encrypted E-mail Definition";
 
-            E_mailContent model = (E_mailContent)TempData["model"];
-            head = model.headSection;
-            content = model.contentSection;
-            footer = model.footerSection;
+            keyName = "Key01";
 
-            var head_encrypt = head;
-            var content_encrypt = content;
-            var footer_encrypt = footer;
+            csp.KeyContainerName = keyName;
+            myRSA = new RSACryptoServiceProvider(csp);
+            myRSA.PersistKeyInCsp = true;
 
-            var private_Key = myRSA.ExportParameters(true);
-            var public_Key = myRSA.ExportParameters(false);
-
-            //Convertirea cheii publice intr-un string
-            string public_Key_String;
-            {
-                var String_Writer = new System.IO.StringWriter();
-                var String_Serializer = new System.Xml.Serialization.XmlSerializer(typeof(RSAParameters));
-
-                String_Serializer.Serialize(String_Writer, public_Key);
-                public_Key_String = String_Writer.ToString();
-            }
-
-            //Convertirea cheii publice inapoi in Byte
-            {
-                var String_Reader = new System.IO.StringReader(public_Key_String);
-                var XML_Serializer = new System.Xml.Serialization.XmlSerializer(typeof(RSAParameters));
-
-                public_Key = (RSAParameters)XML_Serializer.Deserialize(String_Reader);
-            }
-
-            //Convertirea cheii private intr-un string
-            string private_Key_String;
-            {
-                var String_Writer = new System.IO.StringWriter();
-                var String_Serializer = new System.Xml.Serialization.XmlSerializer(typeof(RSAParameters));
-
-                String_Serializer.Serialize(String_Writer, private_Key);
-                private_Key_String = String_Writer.ToString();
-            }
-
-            //Convertirea cheii private inapoi in Byte
-            {
-                var String_Reader = new System.IO.StringReader(private_Key_String);
-                var XML_Serializer = new System.Xml.Serialization.XmlSerializer(typeof(RSAParameters));
-
-                private_Key = (RSAParameters)XML_Serializer.Deserialize(String_Reader);
-
-                TempData["private_key"] = private_Key;
-            }
-
-            //Importare cheie publica
-            rsa_CryptoService.ImportParameters(public_Key);
-
-            //Criptarea e-mail definition
-            var bytesEmailHead = Encoding.Unicode.GetBytes(head_encrypt.ToString());
-            var bytesEmailContent = Encoding.Unicode.GetBytes(content_encrypt.ToString());
-            var bytesEmailFooter = Encoding.Unicode.GetBytes(footer_encrypt.ToString());
-
-            var cypherHead = Convert.ToBase64String(bytesEmailHead);
-            var cypherContent = Convert.ToBase64String(bytesEmailContent);
-            var cypherFooter = Convert.ToBase64String(bytesEmailFooter);
-
-            EncodedEmail encodedModel = new EncodedEmail();
-            encodedModel.encodedheadSection = cypherHead;
-            encodedModel.encodedcontentSection = cypherContent;
-            encodedModel.encodedfooterSection = cypherFooter;
-
-            Session["encodedModel"] = encodedModel;
-
-            ViewBag.head = cypherHead;
-            ViewBag.content = cypherContent;
-            ViewBag.footer = cypherFooter;
-
-            return View("EncryptEmail", model);
+            return View("EncryptEmail");
         }
 
         [HttpPost]
-        [MultipleButton(MatchFormKey= "action", MatchFormValue= "exportKey")] 
-        public ActionResult exportKey()
+        public ActionResult ImportMessage()
         {
-            var parameters = myRSA.ExportParameters(true);
+            var fileName = "";
+            var path = "";
 
-            if (myRSA.PublicOnly)
+            TempData["sErrMsg"] = "RSACryptoServiceProvider does not contain private key!";
+
+            foreach (string file in Request.Files)
             {
-                TempData["sErrMsg"] = "RSACryptoServiceProvider does not contain private key!";
+                var hpf = this.Request.Files[file];
+                if (hpf.ContentLength == 0)
+                {
+                    TempData["sErrMsg"] = "Empty file!";
+                }
+
+                path = Path.Combine(Server.MapPath("~/App_Data/Upload"), Path.GetFileName(hpf.FileName));
+                hpf.SaveAs(path);
+
+                fileName = Path.GetFileName(hpf.FileName);
+
             }
 
-            StringWriter oStringWriter = new StringWriter();
-
-            Response.ContentType = "application/txt";
-            Response.AddHeader("content-disposition", "attachment;filename=Private_Key.pem");
-            Response.Clear();
-
-            using (TextWriter writer = new StreamWriter(Response.OutputStream, Encoding.UTF8))
+            if (fileName != null)
             {
-                ExportPrivateKey(myRSA, writer);
+                EncryptFile(path);
             }
-
-            Response.End();
-
+            
             return View("EncryptEmail");
         }
 
@@ -145,22 +84,27 @@ namespace E_mail_API.Controllers
         [MultipleButton(MatchFormKey = "action", MatchFormValue = "exportEncodedMessage")]
         public ActionResult exportEncodedMessage()
         {
-            EncodedEmail encodedModel = (EncodedEmail)Session["encodedModel"];
-            string headSection = encodedModel.encodedheadSection;
-            string contentSection = encodedModel.encodedcontentSection;
-            string footerSection = encodedModel.encodedfooterSection;
+            
 
+            
+
+            return View("EncryptEmail");
+        }
+
+        [HttpPost]
+        [MultipleButton(MatchFormKey = "action", MatchFormValue = "exportRSAPublicKey")]
+        public ActionResult exportRSAPublicKey()
+        {
             StringWriter oStringWriter = new StringWriter();
 
             Response.ContentType = "application/txt";
-            Response.AddHeader("content-disposition", "attachment;filename=Encoded_Message.txt");
+            Response.AddHeader("content-disposition", "attachment;filename=PublicKey.txt");
             Response.Clear();
 
             using (TextWriter writer = new StreamWriter(Response.OutputStream, Encoding.UTF8))
             {
-                writer.WriteLine("Header: " + headSection);
-                writer.WriteLine("Content: " + contentSection);
-                writer.WriteLine("Footer: " + footerSection);
+                writer.Write(myRSA.ToXmlString(false));
+                writer.Close();
             }
 
             Response.End();
@@ -168,96 +112,62 @@ namespace E_mail_API.Controllers
             return View("EncryptEmail");
         }
 
-        private static void ExportPrivateKey(RSACryptoServiceProvider csp, TextWriter outputStream)
+        private void EncryptFile(string inFile)
         {
-            var parameters = csp.ExportParameters(true);
-            using (var stream = new MemoryStream())
-            {
-                var writer = new BinaryWriter(stream);
-                writer.Write((byte)0x30);
-                using (var innerStream = new MemoryStream())
-                {
-                    var innerWriter = new BinaryWriter(innerStream);
-                    EncodeIntegerBigEndian(innerWriter, new byte[] { 0x00 });
-                    EncodeIntegerBigEndian(innerWriter, parameters.Modulus);
-                    EncodeIntegerBigEndian(innerWriter, parameters.Exponent);
-                    EncodeIntegerBigEndian(innerWriter, parameters.D);
-                    EncodeIntegerBigEndian(innerWriter, parameters.P);
-                    EncodeIntegerBigEndian(innerWriter, parameters.Q);
-                    EncodeIntegerBigEndian(innerWriter, parameters.DP);
-                    EncodeIntegerBigEndian(innerWriter, parameters.DQ);
-                    EncodeIntegerBigEndian(innerWriter, parameters.InverseQ);
-                    var length = (int)innerStream.Length;
-                    EncodeLength(writer, length);
-                    writer.Write(innerStream.GetBuffer(), 0, length);
-                }
+            RijndaelManaged rjndl = new RijndaelManaged();
+            rjndl.KeySize = 256;
+            rjndl.BlockSize = 256;
+            rjndl.Mode = CipherMode.CBC;
+            ICryptoTransform transform = rjndl.CreateEncryptor();
 
-                var base64 = Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length).ToCharArray();
-                // Output as Base64 with lines chopped at 64 characters
-                for (var i = 0; i < base64.Length; i += 64)
+            byte[] keyEncrypted = myRSA.Encrypt(rjndl.Key, false);
+
+            byte[] LenK = new byte[4];
+            byte[] LenIV = new byte[4];
+
+            int lKey = keyEncrypted.Length;
+            LenK = BitConverter.GetBytes(lKey);
+            int lIV = rjndl.IV.Length;
+            LenIV = BitConverter.GetBytes(lIV);
+
+            int startFileName = inFile.LastIndexOf("\\") + 1;
+            string outFile = EncrFolder + inFile.Substring(startFileName, inFile.LastIndexOf(".") - startFileName) + ".enc";
+
+            using (FileStream outFs = new FileStream(outFile, FileMode.Create))
+            {
+                outFs.Write(LenK, 0, 4);
+                outFs.Write(LenIV, 0, 4);
+                outFs.Write(keyEncrypted, 0, lKey);
+                outFs.Write(rjndl.IV, 0, lIV);
+
+                using (CryptoStream outStreamEncrypted = new CryptoStream(outFs, transform, CryptoStreamMode.Write))
                 {
-                    outputStream.WriteLine(base64, i, Math.Min(64, base64.Length - i));
+                    int count = 0;
+                    int offset = 0;
+
+                    int blockSizeBytes = rjndl.BlockSize / 8;
+                    byte[] data = new byte[blockSizeBytes];
+                    int bytesRead = 0;
+
+                    using (FileStream inFs = new FileStream(inFile, FileMode.Open))
+                    {
+                        do
+                        {
+                            count = inFs.Read(data, 0, blockSizeBytes);
+                            offset += count;
+                            outStreamEncrypted.Write(data, 0, count);
+                            bytesRead += blockSizeBytes;
+                        }
+                        while (count > 0);
+                        inFs.Close();
+                    }
+                    outStreamEncrypted.FlushFinalBlock();
+                    outStreamEncrypted.Close();
                 }
+                outFs.Close();
             }
         }
-        private static void EncodeLength(BinaryWriter stream, int length)
-        {
-            if (length < 0) throw new ArgumentOutOfRangeException("length", "Length must be non-negative");
-            if (length < 0x80)
-            {
-                // Short form
-                stream.Write((byte)length);
-            }
-            else
-            {
-                // Long form
-                var temp = length;
-                var bytesRequired = 0;
-                while (temp > 0)
-                {
-                    temp >>= 8;
-                    bytesRequired++;
-                }
-                stream.Write((byte)(bytesRequired | 0x80));
-                for (var i = bytesRequired - 1; i >= 0; i--)
-                {
-                    stream.Write((byte)(length >> (8 * i) & 0xff));
-                }
-            }
-        }
-        private static void EncodeIntegerBigEndian(BinaryWriter stream, byte[] value, bool forceUnsigned = true)
-        {
-            stream.Write((byte)0x02);
-            var prefixZeros = 0;
-            for (var i = 0; i < value.Length; i++)
-            {
-                if (value[i] != 0) break;
-                prefixZeros++;
-            }
-            if (value.Length - prefixZeros == 0)
-            {
-                EncodeLength(stream, 1);
-                stream.Write((byte)0);
-            }
-            else
-            {
-                if (forceUnsigned && value[prefixZeros] > 0x7f)
-                {
-                    EncodeLength(stream, value.Length - prefixZeros + 1);
-                    stream.Write((byte)0);
-                }
-                else
-                {
-                    EncodeLength(stream, value.Length - prefixZeros);
-                }
-                for (var i = prefixZeros; i < value.Length; i++)
-                {
-                    stream.Write(value[i]);
-                }
-            }
-        }
-
-
+        
         //Sending e-mails function
         /*
                public static void SendEncryptedEmail(string[] to, string from, string subject, string body, string[] attachments)

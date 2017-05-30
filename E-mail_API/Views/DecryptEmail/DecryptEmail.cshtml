@@ -18,32 +18,19 @@
 
         <section class="featured">
             <div class="content-wrapper">
-                <h2> Enter Encoded Message and RSA key for decryption. </h2>
+                <h2> Enter RSA key and Encoded Message for decryption. </h2>
             </div>
         </section>
-
-            <section class="content-wrapper main-content clear-fix">
-                <div class="panel-body">
-                    <label class="col-sm-3 control-label">Head</label>
-                    <div class="col-sm-8">
-                        <textarea readonly name="headSection" id="headSection">@ViewBag.head</textarea>
-                    </div>
-                </div>
                 <br />
-                <div class="panel-body">
-                    <label class="col-sm-3 control-label">Content</label>
-                    <div class="col-sm-8">
-                        <textarea readonly name="contentSection" id="contentSection">@ViewBag.content</textarea>
-                    </div>
-                </div>
-                <br />
-                <div class="panel-body">
-                    <label class="col-sm-3 control-label">Footer</label>
-                    <div class="col-sm-8">
-                        <textarea readonly name="footerSection" id="footerSection">@ViewBag.footer</textarea>
-                    </div>
-                </div>
-                <br />
+                <label class="col-sm-3 control-label" for="file">Upload RSA Public Key:</label>
+                @using (Html.BeginForm("ImportKey", "DecryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input class="col-sm-3" type="file" name="file" id="file" />
+                        <span class="input-group-btn">
+                            <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
+                        </span>
+                }
+                <br>
                 <label class="col-sm-3 control-label" for="file">Upload encrypted message:</label>
                 @using (Html.BeginForm("ImportMessage", "DecryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
@@ -52,16 +39,6 @@
                             <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
                         </span>
                 }
-                <br>
-                <label class="col-sm-3 control-label" for="file">Upload RSA key:</label>
-                @using (Html.BeginForm("ImportKey", "DecryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                {
-                    <input class="col-sm-3" type="file" name="file" id="file" />
-                        <span class="input-group-btn">
-                            <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
-                        </span>
-                }
-            </section>
         <section class="featured">
             <div class="content-wrapper">
             </div>
