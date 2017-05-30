@@ -24,8 +24,6 @@ namespace E_mail_API.Controllers
         {
             ViewBag.Title = "E-mail Definition";
 
-            TempData["clicked"] = null;
-
             return View();
         }
 
@@ -45,8 +43,6 @@ namespace E_mail_API.Controllers
             model.footerSection = footerSection;
 
             TempData["model"] = model;
-
-            Session["model"] = model;
 
             return RedirectToAction("Index", "EncryptEmail");
         }

@@ -1,6 +1,10 @@
-﻿<link type="text/css" href="~/EncryptPage.css" rel="stylesheet" />
+﻿@{ 
+    ViewBag.Title = "Decrypt E-mail Definition";
+}
 
-<header class="encrypt-page">
+<link type="text/css" href="~/DecryptPage.css" rel="stylesheet" />
+
+<header class="decrypt-page">
     <div class="content-wrapper">
         <div>
             <h1>@ViewBag.Title</h1>
@@ -9,17 +13,14 @@
     </div>
 </header>
 
-<body class="encrypt-page">
-    <div id="body" class="encrypt-page">
+<body class="decrypt-page">
+    <div id="body" class="decrypt-page">
 
         <section class="featured">
             <div class="content-wrapper">
                 <h2> Enter Encoded Message and RSA key for decryption. </h2>
             </div>
         </section>
-
-        @using (Html.BeginForm())
-        {
 
             <section class="content-wrapper main-content clear-fix">
                 <div class="panel-body">
@@ -43,11 +44,24 @@
                     </div>
                 </div>
                 <br />
-                <button class="encrypt-page-button" name="action" value="importMessage">Import Encoded Message</button>
-                <button class="encrypt-page-button" name="action" value="importKey">Import RSA key</button>
+                <label class="col-sm-3 control-label" for="file">Upload encrypted message:</label>
+                @using (Html.BeginForm("ImportMessage", "DecryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input class="col-sm-3" type="file" name="file" id="file" />
+                        <span class="input-group-btn">
+                            <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
+                        </span>
+                }
+                <br>
+                <label class="col-sm-3 control-label" for="file">Upload RSA key:</label>
+                @using (Html.BeginForm("ImportKey", "DecryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input class="col-sm-3" type="file" name="file" id="file" />
+                        <span class="input-group-btn">
+                            <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
+                        </span>
+                }
             </section>
-
-        }
         <section class="featured">
             <div class="content-wrapper">
             </div>

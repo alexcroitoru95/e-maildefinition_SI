@@ -83,7 +83,9 @@ namespace E_mail_API.Controllers
                 var String_Reader = new System.IO.StringReader(private_Key_String);
                 var XML_Serializer = new System.Xml.Serialization.XmlSerializer(typeof(RSAParameters));
 
-                public_Key = (RSAParameters)XML_Serializer.Deserialize(String_Reader);
+                private_Key = (RSAParameters)XML_Serializer.Deserialize(String_Reader);
+
+                TempData["private_key"] = private_Key;
             }
 
             //Importare cheie publica
@@ -126,7 +128,7 @@ namespace E_mail_API.Controllers
             StringWriter oStringWriter = new StringWriter();
 
             Response.ContentType = "application/txt";
-            Response.AddHeader("content-disposition", "attachment;filename=Private_Key.txt");
+            Response.AddHeader("content-disposition", "attachment;filename=Private_Key.pem");
             Response.Clear();
 
             using (TextWriter writer = new StreamWriter(Response.OutputStream, Encoding.UTF8))
@@ -191,13 +193,11 @@ namespace E_mail_API.Controllers
                 }
 
                 var base64 = Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length).ToCharArray();
-                outputStream.WriteLine("-----BEGIN RSA PRIVATE KEY-----");
                 // Output as Base64 with lines chopped at 64 characters
                 for (var i = 0; i < base64.Length; i += 64)
                 {
                     outputStream.WriteLine(base64, i, Math.Min(64, base64.Length - i));
                 }
-                outputStream.WriteLine("-----END RSA PRIVATE KEY-----");
             }
         }
         private static void EncodeLength(BinaryWriter stream, int length)

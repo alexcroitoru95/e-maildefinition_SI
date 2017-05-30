@@ -1,0 +1,124 @@
+﻿.decrypt-page h1,
+.decrypt-page .h1,
+.decrypt-page h2,
+.decrypt-page .h2,
+.decrypt-page h3,
+.decrypt-page .h3,
+#body.decrypt-page,
+.decrypt-page-table th,
+.decrypt-page-table pre,
+.decrypt-page-table p {
+    font-family: "Segoe UI Light", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+.decrypt-page pre.wrapped {
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    white-space: pre-wrap;
+}
+
+.decrypt-page .warning-message-container {
+    margin-top: 20px;
+    padding: 0 10px;
+    color: #525252;
+    background: #EFDCA9;
+    border: 1px solid #CCCCCC;
+}
+
+.decrypt-page-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    margin: 0px 0px 20px 0px;
+    border-top: 1px solid #D4D4D4;
+}
+
+    .decrypt-page-table th {
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 1px solid #D4D4D4;
+        padding: 5px 6px 5px 6px;
+    }
+
+    .decrypt-page-table td {
+        border-bottom: 1px solid #D4D4D4;
+        padding: 10px 8px 10px 8px;
+        vertical-align: top;
+    }
+
+    .decrypt-page-table pre,
+    .decrypt-page-table p {
+        margin: 0px;
+        padding: 0px;
+        font-family: inherit;
+        font-size: 100%;
+    }
+
+    .decrypt-page-table tbody tr:hover td {
+        background-color: #F3F3F3;
+    }
+
+.decrypt-page a:hover {
+    background-color: transparent;
+}
+
+.decrypt-page h1,
+.decrypt-page .h1 {
+    font-size: 42px;
+    line-height: normal;
+    display: inline;
+}
+
+.decrypt-page h2,
+.decrypt-page .h2 {
+    font-size: 24px;
+}
+
+.decrypt-page h3,
+.decrypt-page .h3 {
+    font-size: 20px;
+}
+
+#body.decrypt-page {
+    font-size: 14px;
+    line-height: 143%;
+    color: #333;
+}
+
+.decrypt-page a {
+    color: #0000EE;
+    text-decoration: none;
+}
+
+.decrypt-page textarea {
+    margin: 0px;
+    width: 490px;
+    height: 104px;
+    resize: none;
+}
+
+.decrypt-page img {
+    width: 300px;
+    height: 100px;
+    float: right;
+    margin-top: 4px;
+}
+
+.decrypt-page-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.upload-label, .upload-input, .upload-button {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
