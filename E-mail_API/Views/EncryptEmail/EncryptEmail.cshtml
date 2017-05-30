@@ -1,0 +1,55 @@
+﻿@model E_mail_API.Models.E_mailContent
+
+@{
+    ViewBag.Title = "Encrypted E-mail Definition";
+}
+
+<link type="text/css" href="~/EncryptPage.css" rel="stylesheet" />
+
+<header class="encrypt-page">
+    <div class="content-wrapper">
+        <div>
+            <h1>@ViewBag.Title</h1>
+            <img src="http://avizier.upt.ro/wp-content/uploads/2013/10/logo3.jpg" alt="UPT Logo">
+        </div>
+    </div>
+</header>
+
+<body class="encrypt-page">
+    <div id="body" class="encrypt-page">
+
+            <section class="featured">
+                <div class="content-wrapper">
+                    <h2> Insert message in order to encrypt. </h2>
+                </div>
+            </section>
+            <section class="content-wrapper main-content clear-fix">
+                <br />
+                <br />
+                <label class="col-sm-3 control-label" for="file">Upload message to encrypt:</label>
+                @using (Html.BeginForm("ImportMessage", "EncryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input class="col-sm-3" type="file" name="file" id="file" />
+                    <span class="input-group-btn">
+                        <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
+                    </span>
+                }
+                <br />
+                <br />
+                <br />
+                <br />
+               @using (Html.BeginForm("exportRSAPublicKey", "EncryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+               {
+                    <button class="encrypt-page-button" name="action" value="exportRSAPublicKey">Export RSA Public Key</button>
+               }
+               @using (Html.BeginForm("exportEncodedMessage", "EncryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+               {
+                    <button class="encrypt-page-button" name="action" value="exportEncodedMessage">Export encoded e-mail definition</button>
+               }
+            </section>
+            <section class="featured">
+                <div class="content-wrapper">
+                </div>
+            </section>
+    </div>
+</body>

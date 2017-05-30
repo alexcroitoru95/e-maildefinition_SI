@@ -1,0 +1,47 @@
+﻿@{ 
+    ViewBag.Title = "Decrypt E-mail Definition";
+}
+
+<link type="text/css" href="~/DecryptPage.css" rel="stylesheet" />
+
+<header class="decrypt-page">
+    <div class="content-wrapper">
+        <div>
+            <h1>@ViewBag.Title</h1>
+            <img src="http://avizier.upt.ro/wp-content/uploads/2013/10/logo3.jpg" alt="UPT Logo">
+        </div>
+    </div>
+</header>
+
+<body class="decrypt-page">
+    <div id="body" class="decrypt-page">
+
+        <section class="featured">
+            <div class="content-wrapper">
+                <h2> Enter RSA key and Encoded Message for decryption. </h2>
+            </div>
+        </section>
+                <br />
+                <label class="col-sm-3 control-label" for="file">Upload RSA Public Key:</label>
+                @using (Html.BeginForm("ImportKey", "DecryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input class="col-sm-3" type="file" name="file" id="file" />
+                        <span class="input-group-btn">
+                            <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
+                        </span>
+                }
+                <br>
+                <label class="col-sm-3 control-label" for="file">Upload encrypted message:</label>
+                @using (Html.BeginForm("ImportMessage", "DecryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input class="col-sm-3" type="file" name="file" id="file" />
+                        <span class="input-group-btn">
+                            <button class="col-sm-3 btn-success" type="submit">Submit <span class="glyphicon glyphicon-ok-sign"></span></button>
+                        </span>
+                }
+        <section class="featured">
+            <div class="content-wrapper">
+            </div>
+        </section>
+    </div>
+</body>

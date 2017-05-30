@@ -18,12 +18,6 @@ namespace E_mail_API
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
-
-            routes.MapRoute(
-                name: "createEmail",
-                url: "{controller}/{action}",
-                defaults: new { controller = "Home", action = "createEmail" }
-            );
         }
     }
 }
