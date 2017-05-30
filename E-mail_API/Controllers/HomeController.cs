@@ -28,15 +28,6 @@ namespace E_mail_API.Controllers
         }
 
         [HttpPost]
-        [MultipleButton(MatchFormKey = "action", MatchFormValue = "goTo")]
-        public ActionResult goTo()
-        {
-            TempData["clicked"] = "clicked";
-
-            return RedirectToAction("Index", "EncryptEmail");
-        }
-
-        [HttpPost]
         [MultipleButton(MatchFormKey = "action", MatchFormValue = "createTXT")]
         public ActionResult createTXT(string headSection, string contentSection, string footerSection)
         {

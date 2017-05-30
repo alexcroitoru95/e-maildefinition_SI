@@ -29,13 +29,6 @@ namespace E_mail_API.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            if (TempData["clicked"] == null)
-            {
-                TempData["sErrMsg"] = "Press 'Create encrypted e-mail' on Home Page!";
-
-                return View("~/Views/Home/Index.cshtml");
-            }
-
             String keyName;
 
             ViewBag.Title = "Encrypted E-mail Definition";
@@ -54,8 +47,6 @@ namespace E_mail_API.Controllers
         {
             var fileName = "";
             var path = "";
-
-            TempData["sErrMsg"] = "RSACryptoServiceProvider does not contain private key!";
 
             foreach (string file in Request.Files)
             {
@@ -84,10 +75,6 @@ namespace E_mail_API.Controllers
         [MultipleButton(MatchFormKey = "action", MatchFormValue = "exportEncodedMessage")]
         public ActionResult exportEncodedMessage()
         {
-            
-
-            
-
             return View("EncryptEmail");
         }
 
@@ -114,6 +101,10 @@ namespace E_mail_API.Controllers
 
         private void EncryptFile(string inFile)
         {
+            var private_key_RSA = myRSA.ExportParameters(true);
+
+            Session["private_key"] = private_key_RSA;
+
             RijndaelManaged rjndl = new RijndaelManaged();
             rjndl.KeySize = 256;
             rjndl.BlockSize = 256;
@@ -167,52 +158,6 @@ namespace E_mail_API.Controllers
                 outFs.Close();
             }
         }
-        
-        //Sending e-mails function
-        /*
-               public static void SendEncryptedEmail(string[] to, string from, string subject, string body, string[] attachments)
-               {
-                   MailMessage message = new MailMessage();
-                   message.From = new MailAddress(from);
-                   message.Subject = subject;
 
-                   body = "Content-Type: text/plain\r\nContent-Transfer-Encoding: 7Bit\r\n\r\n" + body;
-
-
-                   byte[] messageData = Encoding.ASCII.GetBytes(body);
-                   ContentInfo content = new ContentInfo(messageData);
-                   EnvelopedCms envelopedCms = new EnvelopedCms(content);
-                   CmsRecipientCollection toCollection = new CmsRecipientCollection();
-
-                   foreach (string address in to)
-                   {
-                       message.To.Add(new MailAddress(address));
-                       X509Certificate2 certificate = null; //Need to load from store or from file the client's cert
-                       CmsRecipient recipient = new CmsRecipient(SubjectIdentifierType.SubjectKeyIdentifier, certificate);
-                       toCollection.Add(recipient);
-                   }
-
-                   envelopedCms.Encrypt(toCollection);
-                   byte[] encryptedBytes = envelopedCms.Encode();
-
-                   //add digital signature:
-                   SignedCms signedCms = new SignedCms(new ContentInfo(encryptedBytes));
-                   X509Certificate2 signerCertificate = null; //Need to load from store or from file the signer's cert
-                   CmsSigner signer = new CmsSigner(SubjectIdentifierType.SubjectKeyIdentifier, signerCertificate);
-                   signedCms.ComputeSignature(signer);
-                   encryptedBytes = signedCms.Encode();
-                   //end digital signature section
-
-                   MemoryStream stream = new MemoryStream(encryptedBytes);
-                   AlternateView view = new AlternateView(stream, "application/pkcs7-mime; smime-type=signed-data;name=smime.p7m");
-                   message.AlternateViews.Add(view);
-
-                   SmtpClient client = new SmtpClient("your.smtp.mailhost");
-                   //add authentication info if required by your smtp server etc...
-                   //client.Credentials = CredentialCache.DefaultCredentials;
-                   client.Send(message);
-               }
-       */
     }
-
 }

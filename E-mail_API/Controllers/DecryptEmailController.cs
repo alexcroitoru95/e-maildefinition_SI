@@ -38,8 +38,6 @@ namespace E_mail_API.Controllers
 
             String keytxt, keyName;
 
-            TempData["sErrMsg"] = "RSACryptoServiceProvider does not contain private key!";
-
             foreach (string file in Request.Files)
             {
                 var hpf = this.Request.Files[file];
@@ -79,8 +77,6 @@ namespace E_mail_API.Controllers
         {
             var fileName = "";
             var path = "";
-
-            TempData["sErrMsg"] = "RSACryptoServiceProvider does not contain private key!";
 
             foreach (string file in Request.Files)
             {
@@ -138,6 +134,9 @@ namespace E_mail_API.Controllers
                 inFs.Read(KeyEncrypted, 0, lenK);
                 inFs.Seek(8 + lenK, SeekOrigin.Begin);
                 inFs.Read(IV, 0, lenIV);
+
+                var private_key = (RSAParameters)Session["private_key"];
+                myRSA.ImportParameters(private_key);
 
                 byte[] KeyDecrypted = myRSA.Decrypt(KeyEncrypted, false);
 

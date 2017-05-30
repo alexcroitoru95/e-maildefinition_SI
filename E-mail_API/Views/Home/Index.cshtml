@@ -15,12 +15,6 @@
 
 <body class="start-page">
     <div id="body" class="start-page">
-
-@if (TempData["sErrMsg"] != null)
-{
-    Html.RenderPartial("ErrorMessageView", TempData["sErrMsg"]);
-}
-
         <section class="featured">
             <div class="content-wrapper">
                 <h2> Create new e-mail </h2>
@@ -56,7 +50,6 @@
             <br />
         
             <button class="start-page-button" name="action" value="createTXT">Create E-mail Text</button>
-            <button class="start-page-button" name="action" value="goTo">Go to encryption part</button>
             <button class="start-page-button" name="action" value="createPDF">Preview PDF E-mail</button>
         
         </section>

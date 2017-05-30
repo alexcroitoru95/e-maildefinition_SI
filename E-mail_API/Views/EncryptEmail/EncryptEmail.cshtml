@@ -38,11 +38,14 @@
                 <br />
                 <br />
                 <br />
-                @using (Html.BeginForm())
-                { 
-                    <button class="encrypt-page-button" name="action" value="exportEncodedMessage">Export encoded e-mail definition</button>
+               @using (Html.BeginForm("exportRSAPublicKey", "EncryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+               {
                     <button class="encrypt-page-button" name="action" value="exportRSAPublicKey">Export RSA Public Key</button>
-                }
+               }
+               @using (Html.BeginForm("exportEncodedMessage", "EncryptEmail", FormMethod.Post, new { enctype = "multipart/form-data" }))
+               {
+                    <button class="encrypt-page-button" name="action" value="exportEncodedMessage">Export encoded e-mail definition</button>
+               }
             </section>
             <section class="featured">
                 <div class="content-wrapper">
